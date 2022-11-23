@@ -1,5 +1,5 @@
 ﻿#include <iostream>
-#include <deque>
+#include <queue>
 #include <string>
 #include <vector>
 
@@ -7,6 +7,7 @@
 using Color = bool;
 using KEY_TYPE = int;
 using VALUE_TYPE = int;
+using namespace std;
 
 static const Color red = false;
 static const Color black = true;
@@ -49,6 +50,9 @@ public:
 
     void fixDelete(RedBlackTreeNode* node);
 
+    void showTree();
+
+    void midOrder(RedBlackTreeNode* node);
 };
 
 void RedBlackTree::rotateL(RedBlackTreeNode* left_node) {
@@ -118,7 +122,7 @@ void RedBlackTree::insertNode(KEY_TYPE key) {
         prev->right = new_node;
     }
     fixInsert(new_node);
-    //print();
+    showTree();
 }
 
 void RedBlackTree::fixInsert(RedBlackTreeNode* new_node) {
@@ -232,7 +236,98 @@ void RedBlackTree::deleteNode(KEY_TYPE key) {
         fixDelete(delete_node_son);
     }
     delete delete_node;
-    //print();
+    showTree();
+}
+
+void RedBlackTree::fixDelete(RedBlackTreeNode* delete_node_son) {
+    while (delete_node_son != root && delete_node_son->color == black) {
+        if (delete_node_son == delete_node_son->parent->left) {
+            RedBlackTreeNode* bro = delete_node_son->parent->right;
+            if (bro->color == red) {
+                bro->color = black;
+                delete_node_son->parent->color == red;
+                rotateL(delete_node_son->parent);
+                bro = delete_node_son->parent->right;
+            }
+
+            if (bro->left->color == black && bro->right->color == black) {
+                bro->color = red;
+                delete_node_son = delete_node_son->parent;
+            }
+            else {
+                if (bro->right->color == black) {
+                    bro->color = red;
+                    bro->left->color = black;
+                    rotateR(bro);
+                }
+                bro->color = bro->parent->color;
+                bro->parent->color = black;
+                bro->right->color = black;
+                rotateL(delete_node_son->parent);
+                delete_node_son = root;
+            }
+        }
+        else {
+            RedBlackTreeNode* bro = delete_node_son->parent->left;
+            if (bro->color == red) {
+                bro->color == black;
+                delete_node_son->parent->color = red;
+                rotateR(delete_node_son->parent);
+                bro = delete_node_son->parent->left;
+            }
+
+            if (bro->right->color == black && bro->left->color == black) {
+                bro->color = red;
+                delete_node_son = delete_node_son->parent;
+            }
+            else {
+                if (bro->left->color == black) {
+                    bro->color = red;
+                    bro->right->color = black;
+                    rotateL(bro);
+                }
+                bro->color = bro->parent->color;
+                bro->parent->color = black;
+                bro->left->color = black;
+                rotateR(delete_node_son->parent);
+                delete_node_son = root;
+            }
+        }
+    }
+    delete_node_son->color = black;
+}
+
+void RedBlackTree::showTree(){
+    queue<RedBlackTreeNode*> q;
+    q.push(root);
+    RedBlackTreeNode* cur;
+    while (!q.empty()) {
+
+        int n = q.size();
+        for (int i = 0; i < n; i++) {
+            cur = q.front();
+            q.pop();
+            
+            string color = cur->color ? "b:  " : "r:  ";
+            cout << color << ((cur == nil) ?  "nil" : to_string(cur->key)) << "  ";
+
+            if (cur->left) {
+                q.push(cur->left);
+            }
+            if (cur->right) {
+                q.push(cur->right);
+            }
+        }
+    }
+}
+
+
+void RedBlackTree::midOrder(RedBlackTreeNode* node) {
+    if (node == nil) return;
+    midOrder(node->left);
+    string color = node->color ? "b:" : "r:";
+    cout << color << to_string(node->key) << "  ";
+    midOrder(node->right);
 }
 int main() {
  
