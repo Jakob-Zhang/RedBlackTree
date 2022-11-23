@@ -41,6 +41,14 @@ public:
 
     void fixInsert(RedBlackTreeNode* node);
 
+    RedBlackTreeNode* searchNode(KEY_TYPE key);
+
+    RedBlackTreeNode* successor(RedBlackTreeNode* node);
+
+    void deleteNode(KEY_TYPE key);
+
+    void fixDelete(RedBlackTreeNode* node);
+
 };
 
 void RedBlackTree::rotateL(RedBlackTreeNode* left_node) {
@@ -153,6 +161,78 @@ void RedBlackTree::fixInsert(RedBlackTreeNode* new_node) {
         }
     }
     root->color = black;
+}
+
+RedBlackTreeNode* RedBlackTree::searchNode(KEY_TYPE key) {
+    RedBlackTreeNode* cur = root;
+    while (cur != nil) {
+        if (key < cur->key) {
+            cur = cur->left;
+        }
+        else if (key > cur->key) {
+            cur = cur->right;
+        }
+        else {
+            return cur;
+        }
+    }
+    return cur;
+}
+
+RedBlackTreeNode* RedBlackTree::successor(RedBlackTreeNode* node) {
+    if (node->right != nil) {
+        RedBlackTreeNode* res = node->right;
+        while(res->left != nil) {
+            res = res->left;
+        }
+        return res;
+    }
+    else {
+        while (node != root && node != node->parent->left) {
+            node = node->parent;
+        }
+        return node->parent;
+    }
+}
+
+void RedBlackTree::deleteNode(KEY_TYPE key) {
+    RedBlackTreeNode* key_node = searchNode(key);
+    RedBlackTreeNode* delete_node;
+    RedBlackTreeNode* delete_node_son;
+    if (key_node->left != nil && key_node->right != nil) {
+        delete_node = successor(key_node);
+        //是右子树的原因是successor返回的是key_node的中序后驱，没有比它更小的，根据AVL定义，没有左子树;
+        delete_node_son = delete_node->right;
+    }
+    else {
+        delete_node = key_node;
+        if (key_node->left != nil) {
+            delete_node_son = key_node->left;
+        }
+        else {
+            delete_node_son = key_node->right;
+        }
+    }
+
+    delete_node_son->parent = delete_node->parent;
+    if (delete_node == root) {
+        root = delete_node_son;
+    }
+    else if (delete_node == delete_node->parent->left) {
+        delete_node->parent->left = delete_node_son;
+    }
+    else {
+        delete_node->parent->right = delete_node_son;
+    }
+
+    key_node->key = delete_node->key;
+    key_node->val = delete_node->val;
+
+    if (delete_node->color == black) {
+        fixDelete(delete_node_son);
+    }
+    delete delete_node;
+    //print();
 }
 int main() {
  
