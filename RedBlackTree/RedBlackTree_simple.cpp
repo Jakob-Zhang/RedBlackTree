@@ -41,6 +41,14 @@ public:
 
     void fixInsert(RedBlackTreeNode* node);
 
+    RedBlackTreeNode* searchNode(KEY_TYPE key);
+
+    RedBlackTreeNode* successor(RedBlackTreeNode* node);
+
+    void deleteNode(KEY_TYPE key);
+
+    void fixDelete(RedBlackTreeNode* node);
+
 };
 
 void RedBlackTree::rotateL(RedBlackTreeNode* left_node) {
@@ -154,6 +162,40 @@ void RedBlackTree::fixInsert(RedBlackTreeNode* new_node) {
     }
     root->color = black;
 }
+
+RedBlackTreeNode* RedBlackTree::searchNode(KEY_TYPE key) {
+    RedBlackTreeNode* cur = root;
+    while (cur != nil) {
+        if (key < cur->key) {
+            cur = cur->left;
+        }
+        else if (key > cur->key) {
+            cur = cur->right;
+        }
+        else {
+            return cur;
+        }
+    }
+    return cur;
+}
+
+RedBlackTreeNode* RedBlackTree::successor(RedBlackTreeNode* node) {
+    if (node->right != nil) {
+        RedBlackTreeNode* res = node->right;
+        while(res->left != nil) {
+            res = res->left;
+        }
+        return res;
+    }
+    else {
+        while (node != root && node != node->parent->left) {
+            node = node->parent;
+        }
+        return node->parent;
+    }
+}
+
+
 int main() {
  
     return 0;
