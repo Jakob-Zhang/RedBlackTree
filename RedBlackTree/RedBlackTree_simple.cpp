@@ -329,6 +329,7 @@ void RedBlackTree::midOrder(RedBlackTreeNode* node) {
     cout << color << to_string(node->key) << "  ";
     midOrder(node->right);
 }
+
 int main() {
  
     return 0;
