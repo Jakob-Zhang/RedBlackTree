@@ -18,5 +18,8 @@
     <ClCompile Include="RedBlackTree_simple.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="RedBlackTree_original.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

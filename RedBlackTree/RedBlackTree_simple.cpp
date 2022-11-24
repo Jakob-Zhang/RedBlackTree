@@ -23,7 +23,7 @@ public:
     VALUE_TYPE val;
 
     RedBlackTreeNode(Color color_) : color(color_), parent(nullptr), left(nullptr), right(nullptr), key(INT_MIN) {}
-    RedBlackTreeNode(Color color_, KEY_TYPE key_, RedBlackTreeNode* nil) :color(color_), parent(nil), left(nullptr), right(nullptr), key(key_) {}
+    RedBlackTreeNode(Color color_, KEY_TYPE key_, RedBlackTreeNode* nil) :color(color_), parent(nil), left(nil), right(nil), key(key_) {}
 };
 
 class RedBlackTree {
@@ -96,6 +96,7 @@ void RedBlackTree::rotateR(RedBlackTreeNode* right_node) {
     right_node->parent = x;
     x->right = right_node;
 }
+
 void RedBlackTree::insertNode(KEY_TYPE key) {
     RedBlackTreeNode* prev = nil;
     RedBlackTreeNode* cur = root;
@@ -112,6 +113,7 @@ void RedBlackTree::insertNode(KEY_TYPE key) {
         }
     }
     RedBlackTreeNode* new_node = new RedBlackTreeNode(red, key, nil);
+    new_node->parent = prev;
     if (prev == nil) {
         root = new_node;
     }
@@ -127,7 +129,7 @@ void RedBlackTree::insertNode(KEY_TYPE key) {
 
 void RedBlackTree::fixInsert(RedBlackTreeNode* new_node) {
     while (new_node->parent->color == red) {
-        if (new_node->parent = new_node->parent->parent->left) {
+        if (new_node->parent == new_node->parent->parent->left) {
             RedBlackTreeNode* uncle = new_node->parent->parent->right;
             if (uncle->color == red) {
                 uncle->color = black;
@@ -245,7 +247,7 @@ void RedBlackTree::fixDelete(RedBlackTreeNode* delete_node_son) {
             RedBlackTreeNode* bro = delete_node_son->parent->right;
             if (bro->color == red) {
                 bro->color = black;
-                delete_node_son->parent->color == red;
+                delete_node_son->parent->color = red;
                 rotateL(delete_node_son->parent);
                 bro = delete_node_son->parent->right;
             }
@@ -270,7 +272,7 @@ void RedBlackTree::fixDelete(RedBlackTreeNode* delete_node_son) {
         else {
             RedBlackTreeNode* bro = delete_node_son->parent->left;
             if (bro->color == red) {
-                bro->color == black;
+                bro->color = black;
                 delete_node_son->parent->color = red;
                 rotateR(delete_node_son->parent);
                 bro = delete_node_son->parent->left;
@@ -303,7 +305,7 @@ void RedBlackTree::showTree(){
     RedBlackTreeNode* cur;
     while (!q.empty()) {
 
-        int n = q.size();
+        size_t n = q.size();
         for (int i = 0; i < n; i++) {
             cur = q.front();
             q.pop();
@@ -318,6 +320,7 @@ void RedBlackTree::showTree(){
                 q.push(cur->right);
             }
         }
+        cout << endl;
     }
 }
 
@@ -331,6 +334,28 @@ void RedBlackTree::midOrder(RedBlackTreeNode* node) {
 }
 
 int main() {
- 
+    RedBlackTree rb;
+    string select;
+    KEY_TYPE key;
+    while (true) {
+        std::cout << "\n输入操作：i：插入key，d：删除key q：退出" << std::endl;
+        std::cin >> select;
+        if (select == "i") {
+            std::cout << "输入key" << std::endl;
+            std::cin >> key;
+            rb.insertNode(key);
+        }
+        else if (select == "d") {
+            std::cout << "输入key" << std::endl;
+            std::cin >> key;
+            rb.deleteNode(key);
+        }
+        else if (select == "q") {
+            break;
+        }
+        else {
+            std::cout << "输入不合法，重新输入" << std::endl;
+        }
+    }
     return 0;
 }
