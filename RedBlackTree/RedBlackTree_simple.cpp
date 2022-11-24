@@ -329,6 +329,65 @@ void RedBlackTree::midOrder(RedBlackTreeNode* node) {
     cout << color << to_string(node->key) << "  ";
     midOrder(node->right);
 }
+
+void RedBlackTree::fixDelete(RedBlackTreeNode* delete_node_son) {
+    while (delete_node_son != root && delete_node_son->color == black) {
+        if (delete_node_son == delete_node_son->parent->left) {
+            RedBlackTreeNode* bro = delete_node_son->parent->right;
+            if (bro->color == red) {
+                bro->color = black;
+                delete_node_son->parent->color == red;
+                rotateL(delete_node_son->parent);
+                bro = delete_node_son->parent->right;
+            }
+
+            if (bro->left->color == black && bro->right->color == black) {
+                bro->color = red;
+                delete_node_son = delete_node_son->parent;
+            }
+            else {
+                if (bro->right->color == black) {
+                    bro->color = red;
+                    bro->left->color = black;
+                    rotateR(bro);
+                }
+                bro->color = bro->parent->color;
+                bro->parent->color = black;
+                bro->right->color = black;
+                rotateL(delete_node_son->parent);
+                delete_node_son = root;
+            }
+        }
+        else {
+            RedBlackTreeNode* bro = delete_node_son->parent->left;
+            if (bro->color == red) {
+                bro->color == black;
+                delete_node_son->parent->color = red;
+                rotateR(delete_node_son->parent);
+                bro = delete_node_son->parent->left;
+            }
+
+            if (bro->right->color == black && bro->left->color == black) {
+                bro->color = red;
+                delete_node_son = delete_node_son->parent;
+            }
+            else {
+                if (bro->left->color == black) {
+                    bro->color = red;
+                    bro->right->color = black;
+                    rotateL(bro);
+                }
+                bro->color = bro->parent->color;
+                bro->parent->color = black;
+                bro->left->color = black;
+                rotateR(delete_node_son->parent);
+                delete_node_son = root;
+            }
+        }
+    }
+    delete_node_son->color = black;
+}
+
 int main() {
  
     return 0;
