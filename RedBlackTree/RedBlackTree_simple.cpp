@@ -203,6 +203,7 @@ RedBlackTreeNode* RedBlackTree::successor(RedBlackTreeNode* node) {
 
 void RedBlackTree::deleteNode(KEY_TYPE key) {
     RedBlackTreeNode* key_node = searchNode(key);
+    if (key_node == nil) return;
     RedBlackTreeNode* delete_node;
     RedBlackTreeNode* delete_node_son;
     if (key_node->left != nil && key_node->right != nil) {
